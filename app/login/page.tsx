@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -11,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function LoginPage() {
   const router = useRouter()
-  const [username, setUsername] = useState("")
+  const [identifier, setIdentifier] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -28,7 +27,7 @@ export default function LoginPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: username, // Send username in the email field
+          email: identifier, // This will accept either email or username
           password,
         }),
       })
@@ -36,10 +35,7 @@ export default function LoginPage() {
       const data = await response.json()
 
       if (response.ok) {
-        // Store user data in localStorage
         localStorage.setItem("user", JSON.stringify(data.user))
-
-        // Redirect based on role
         if (data.user.role === "manager") {
           router.push("/manager")
         } else {
@@ -71,17 +67,17 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="username" className="text-white">
-              Username
+            <Label htmlFor="identifier" className="text-white">
+              Username or Email
             </Label>
             <Input
-              id="username"
+              id="identifier"
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               required
               className="bg-black border-white text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400"
-              placeholder="Enter your username"
+              placeholder="Enter your username or email"
             />
           </div>
 
@@ -105,6 +101,9 @@ export default function LoginPage() {
           </Button>
         </form>
       </div>
+    </div>
+  )
+}
     </div>
   )
 }
