@@ -35,14 +35,13 @@ export default function LoginPage() {
 
       const data = await response.json()
 
-    if (response.ok) {
+  if (response.ok) {
   localStorage.setItem("user", JSON.stringify(data.user))
   // Always go to dashboard first, regardless of role
   router.push("/dashboard")
+} else {
+  setError(data.error || "Login failed")
 }
-      } else {
-        setError(data.error || "Login failed")
-      }
     } catch (error) {
       setError("An error occurred during login")
     } finally {
