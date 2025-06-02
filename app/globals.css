@@ -4,11 +4,29 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  background-color: black;
+  min-width: 1024px;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Force desktop layout on all devices */
+  .force-desktop {
+    min-width: 1024px;
+    width: 1024px;
+  }
+
+  /* Hide scrollbars but allow scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 
