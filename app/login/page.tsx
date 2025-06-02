@@ -35,16 +35,11 @@ export default function LoginPage() {
 
       const data = await response.json()
 
-      if (response.ok) {
-        // Store user data in localStorage
-        localStorage.setItem("user", JSON.stringify(data.user))
-
-        // Redirect based on role
-        if (data.user.role === "manager") {
-          router.push("/manager")
-        } else {
-          router.push("/dashboard")
-        }
+    if (response.ok) {
+  localStorage.setItem("user", JSON.stringify(data.user))
+  // Always go to dashboard first, regardless of role
+  router.push("/dashboard")
+}
       } else {
         setError(data.error || "Login failed")
       }
