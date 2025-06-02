@@ -1,4 +1,4 @@
-import { sql } from "@vercel/postgres"
+import { sql } from "@neondatabase/serverless"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string; trainingId: string } }) {
