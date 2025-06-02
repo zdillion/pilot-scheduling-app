@@ -17,10 +17,11 @@ export const metadata: Metadata = {
     title: "Pilot Scheduling App",
   },
   viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
+    width: "1024",
+    initialScale: .4,
+    minimumScale: .1,
+    maximumScale: 3.0,
+    userScalable: true,
   },
     generator: 'v0.dev'
 }
