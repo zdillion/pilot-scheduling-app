@@ -54,3 +54,32 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     return NextResponse.json({ error: "Failed to update pilot" }, { status: 500 })
   }
 }
+
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const pilotId = Number.parseInt(params.id)
+
+    if (isNaN(pilotId)) {
+      return NextResponse.json({ error: "Invalid pilot ID" }, { status: 400 })
+    }
+
+    // Delete the pilot
+    const deletedPilot = await sql`
+      DELETE FROM users
+      WHERE id = ${pilotId}
+      RETURNING id, first_name, last_name
+    `
+
+    if (deletedPilot.length === 0) {
+      return NextResponse.json({ error: "Pilot not found" }, { status: 404 })
+    }
+
+    return NextResponse.json({
+      message: "Pilot deleted successfully",
+      deletedPilot: deletedPilot[0],
+    })
+  } catch (error) {
+    console.error("Error deleting pilot:", error)
+    return NextResponse.json({ error: "Failed to delete pilot" }, { status: 500 })
+  }
+}
