@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday } from "date-fns"
-import { ChevronLeft, ChevronRight, Eye, Save, Trash2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Eye, Save, Trash2 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -120,7 +120,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
     try {
       // Use the correct API endpoint that returns both shift and training assignments
-      const response = await fetch(`/api/schedules/${scheduleId}/assignments`) // This endpoint returns both types
+      const response = await fetch(`/api/schedules/${scheduleId}/assignments`)
       console.log("Response status:", response.status)
 
       if (response.ok) {
@@ -174,8 +174,9 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
             console.log(`Created slot key: ${slotKey}`, loadedAssignments[slotKey])
           })
-
-          // **FIX: Also populate trainingDays state for calendar rendering**
+          
+          // ADDED FIX: Process training assignments for trainingDays state
+          console.log("Processing training assignments for trainingDays state")
           const processedTrainingDays: TrainingDay[] = []
 
           // Group training assignments by date and training day
@@ -210,8 +211,8 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
             })
           })
 
+          console.log("Setting trainingDays from assignments:", processedTrainingDays)
           setTrainingDays(processedTrainingDays)
-          console.log("Processed training days for calendar:", processedTrainingDays)
         }
 
         console.log("Final processed assignments:", loadedAssignments)
