@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { LogOut, Settings, Home, CalendarDays, Cog, ArrowLeftRight, Plane } from "lucide-react"
+import { LogOut, Settings, Home, CalendarDays, Cog, ArrowLeftRight, Plane, Menu } from "lucide-react"
 
 interface User {
   id: number
@@ -27,6 +27,7 @@ export default function DashboardPage() {
   const [upcomingTraining, setUpcomingTraining] = useState<Array<{ date: string; trainingDate: Date }>>([])
   const [isLoadingAssignments, setIsLoadingAssignments] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const router = useRouter()
 
   // First useEffect - just handle user authentication
@@ -266,20 +267,33 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Navigation Links */}
-      <nav className="bg-black border-b border-white">
+      {/* Mobile Navigation Toggle */}
+      <div className="md:hidden bg-black border-b border-white p-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="w-full bg-black border-white text-white hover:bg-white hover:text-black"
+        >
+          <Menu className="w-4 h-4 mr-2" />
+          {mobileMenuOpen ? "Hide Menu" : "Show Menu"}
+        </Button>
+      </div>
+
+      {/* Navigation Links - Desktop (always visible) and Mobile (toggleable) */}
+      <nav className={`bg-black border-b border-white ${mobileMenuOpen ? "block" : "hidden"} md:block`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8">
+          <div className="flex flex-col md:flex-row md:space-x-8">
             <Button
               variant="ghost"
-              className="flex items-center px-3 py-4 text-sm font-medium text-blue-400 border-b-2 border-blue-400 hover:bg-gray-800"
+              className="flex items-center px-3 py-4 text-sm font-medium text-blue-400 border-b-2 border-blue-400 hover:bg-gray-800 justify-start"
             >
               <Home className="w-4 h-4 mr-2" />
               Dashboard
             </Button>
             <Button
               variant="ghost"
-              className="flex items-center px-3 py-4 text-sm font-medium text-gray-300 hover:text-white border-b-2 border-transparent hover:border-gray-300 hover:bg-gray-800"
+              className="flex items-center px-3 py-4 text-sm font-medium text-gray-300 hover:text-white border-b-2 border-transparent hover:border-gray-300 hover:bg-gray-800 justify-start"
               onClick={() => router.push("/schedule/view")}
             >
               <CalendarDays className="w-4 h-4 mr-2" />
@@ -287,7 +301,7 @@ export default function DashboardPage() {
             </Button>
             <Button
               variant="ghost"
-              className="flex items-center px-3 py-4 text-sm font-medium text-gray-300 hover:text-white border-b-2 border-transparent hover:border-gray-300 hover:bg-gray-800"
+              className="flex items-center px-3 py-4 text-sm font-medium text-gray-300 hover:text-white border-b-2 border-transparent hover:border-gray-300 hover:bg-gray-800 justify-start"
               onClick={() => router.push("/options")}
             >
               <Cog className="w-4 h-4 mr-2" />
@@ -295,7 +309,7 @@ export default function DashboardPage() {
             </Button>
             <Button
               variant="ghost"
-              className="flex items-center px-3 py-4 text-sm font-medium text-gray-300 hover:text-white border-b-2 border-transparent hover:border-gray-300 hover:bg-gray-800"
+              className="flex items-center px-3 py-4 text-sm font-medium text-gray-300 hover:text-white border-b-2 border-transparent hover:border-gray-300 hover:bg-gray-800 justify-start"
               disabled
             >
               <ArrowLeftRight className="w-4 h-4 mr-2" />
@@ -303,7 +317,7 @@ export default function DashboardPage() {
             </Button>
             <Button
               variant="ghost"
-              className="flex items-center px-3 py-4 text-sm font-medium text-gray-300 hover:text-white border-b-2 border-transparent hover:border-gray-300 hover:bg-gray-800"
+              className="flex items-center px-3 py-4 text-sm font-medium text-gray-300 hover:text-white border-b-2 border-transparent hover:border-gray-300 hover:bg-gray-800 justify-start"
               disabled
             >
               <Plane className="w-4 h-4 mr-2" />
