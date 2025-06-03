@@ -180,7 +180,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
         // Group training assignments by date and training day
         const groupedTraining = data.trainingAssignments.reduce((acc: any, assignment: any) => {
-          const dateKey = new Date(assignment.training_date).toISOString().split("T")[0];
+          const trainingDate = new Date(assignment.training_date).toISOString().split("T")[0]
           const trainingId = assignment.training_day_id;
 
           if (!acc[dateKey]) acc[dateKey] = {};
