@@ -292,15 +292,15 @@ if (data.trainingAssignments) {
         setError("Failed to fetch shift definitions")
       }
 
-      // Fetch training days
-      const trainingResponse = await fetch(`/api/schedules/${scheduleId}/training`)
-      if (trainingResponse.ok) {
-        const trainingData = await trainingResponse.json()
-        setTrainingDays(trainingData.trainingDays || [])
-      } else {
-        console.error("Failed to fetch training days")
-        setTrainingDays([]) // Set to empty array if fetch fails
-      }
+//      // Fetch training days
+//      const trainingResponse = await fetch(`/api/schedules/${scheduleId}/training`)
+//      if (trainingResponse.ok) {
+//        const trainingData = await trainingResponse.json()
+//        setTrainingDays(trainingData.trainingDays || [])
+//      } else {
+//        console.error("Failed to fetch training days")
+//        setTrainingDays([]) // Set to empty array if fetch fails
+//      }
     } catch (error) {
       console.error("An error occurred while fetching schedule data:", error)
       setError("An error occurred while fetching schedule data")
