@@ -174,49 +174,45 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
             console.log(`Created slot key: ${slotKey}`, loadedAssignments[slotKey])
           })
-          // Add this code to your fetchAssignments() function right after processing training assignments
-// (around line 303, after the training assignments forEach loop)
 
-// Process training days for calendar display
-if (data.trainingAssignments) {
-  const processedTrainingDays: TrainingDay[] = [];
+        // Process training days for calendar display
+        const processedTrainingDays: TrainingDay[] = [];
 
-  // Group training assignments by date and training day
-  const groupedTraining = data.trainingAssignments.reduce((acc: any, assignment: any) => {
-    const dateKey = new Date(assignment.training_date).toISOString().split("T")[0];
-    const trainingId = assignment.training_day_id;
+        // Group training assignments by date and training day
+        const groupedTraining = data.trainingAssignments.reduce((acc: any, assignment: any) => {
+          const dateKey = new Date(assignment.training_date).toISOString().split("T")[0];
+          const trainingId = assignment.training_day_id;
 
-    if (!acc[dateKey]) acc[dateKey] = {};
-    if (!acc[dateKey][trainingId]) {
-      acc[dateKey][trainingId] = {
-        id: trainingId,
-        training_date: dateKey,
-        training_name: "Training",
-        pilots: [],
-      };
-    }
+          if (!acc[dateKey]) acc[dateKey] = {};
+          if (!acc[dateKey][trainingId]) {
+            acc[dateKey][trainingId] = {
+              id: trainingId,
+              training_date: dateKey,
+              training_name: "Training",
+              pilots: [],
+            };
+          }
 
-    // Only add pilots with valid IDs (not 0)
-    if (assignment.pilot_id > 0) {
-      acc[dateKey][trainingId].pilots.push({
-        id: assignment.pilot_id,
-        first_name: assignment.first_name,
-        last_name: assignment.last_name,
-      });
-    }
+          // Only add pilots with valid IDs (not 0)
+          if (assignment.pilot_id > 0) {
+            acc[dateKey][trainingId].pilots.push({
+              id: assignment.pilot_id,
+              first_name: assignment.first_name,
+              last_name: assignment.last_name,
+            });
+          }
 
-    return acc;
-  }, {});
+          return acc;
+        }, {});
 
-  // Convert to TrainingDay format
-  Object.values(groupedTraining).forEach((dateGroup: any) => {
-    Object.values(dateGroup).forEach((training: any) => {
-      processedTrainingDays.push(training);
-    });
-  });
+        // Convert to TrainingDay format
+        Object.values(groupedTraining).forEach((dateGroup: any) => {
+          Object.values(dateGroup).forEach((training: any) => {
+            processedTrainingDays.push(training);
+          });
+        });
 
-  setTrainingDays(processedTrainingDays);
-}
+        setTrainingDays(processedTrainingDays);
         }
 
         console.log("Final processed assignments:", loadedAssignments)
@@ -292,7 +288,7 @@ if (data.trainingAssignments) {
         setError("Failed to fetch shift definitions")
       }
 
-//      // Fetch training days
+      // Fetch training days
 //      const trainingResponse = await fetch(`/api/schedules/${scheduleId}/training`)
 //      if (trainingResponse.ok) {
 //        const trainingData = await trainingResponse.json()
