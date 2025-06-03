@@ -219,6 +219,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
         console.log("Total assignments loaded:", Object.keys(loadedAssignments).length)
 
         setAssignments(loadedAssignments)
+        console.log("🔍 Training assignments from API:", data.trainingAssignments)
       } else {
         console.error("Failed to fetch assignments, status:", response.status)
       }
