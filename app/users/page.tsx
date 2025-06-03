@@ -83,12 +83,14 @@ export default function UserManagementPage() {
       const response = await fetch("/api/pilots")
       if (response.ok) {
         const data = await response.json()
-        setUsers(data.pilots)
+        setUsers(data.pilots || []) // Add fallback to empty array
       } else {
         setError("Failed to fetch users")
+        setUsers([]) // Set empty array on error
       }
     } catch (error) {
       setError("Error fetching users")
+      setUsers([]) // Set empty array on error
     }
   }
 
@@ -245,9 +247,9 @@ export default function UserManagementPage() {
     setIsEditDialogOpen(true)
   }
 
-  // Filter users by role
-  const pilots = users.filter((user) => user.role === "pilot" || user.role === "manager")
-  const viewers = users.filter((user) => user.role === "viewer")
+  // Filter users by role - add safety check
+  const pilots = users?.filter((user) => user.role === "pilot" || user.role === "manager") || []
+  const viewers = users?.filter((user) => user.role === "viewer") || []
 
   const UserTable = ({
     userList,
@@ -266,7 +268,7 @@ export default function UserManagementPage() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {userList.map((user) => (
+        {userList?.map((user) => (
           <TableRow key={user.id}>
             <TableCell className="font-medium text-white">
               {user.first_name} {user.last_name}
@@ -310,7 +312,7 @@ export default function UserManagementPage() {
               </div>
             </TableCell>
           </TableRow>
-        ))}
+        )) || []}
       </TableBody>
     </Table>
   )
@@ -320,8 +322,12 @@ export default function UserManagementPage() {
     router.push("/login")
   }
 
-  if (!currentUser) {
-    return <div>Loading...</div>
+  if (!currentUser || isLoading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    )
   }
 
   return (
