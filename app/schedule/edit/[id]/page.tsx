@@ -216,6 +216,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
         }
 
         console.log("Final processed assignments:", loadedAssignments)
+        console.log("🔍 Training days being set:", processedTrainingDays)
         console.log("Total assignments loaded:", Object.keys(loadedAssignments).length)
 
         setAssignments(loadedAssignments)
