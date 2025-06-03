@@ -17,10 +17,9 @@ export const metadata: Metadata = {
     title: "Pilot Scheduling App",
   },
   viewport: {
-    width: 1024,
-    initialScale: 0.4,
-    minimumScale: 0.1,
-    maximumScale: 3.0,
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5.0,
     userScalable: true,
   },
 }
@@ -31,12 +30,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="overflow-x-auto">
+    <html lang="en">
       <head>
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
       </head>
-      <body className={`${inter.className} min-w-[1024px]`}>
-        <div className="min-w-[1024px]">{children}</div>
+      <body className={inter.className}>
+        {children}
         <PWAInstaller />
       </body>
     </html>
