@@ -174,6 +174,44 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
             console.log(`Created slot key: ${slotKey}`, loadedAssignments[slotKey])
           })
+
+          // **FIX: Also populate trainingDays state for calendar rendering**
+          const processedTrainingDays: TrainingDay[] = []
+
+          // Group training assignments by date and training day
+          const groupedTraining = data.trainingAssignments.reduce((acc: any, assignment: any) => {
+            const dateKey = assignment.training_date.split("T")[0]
+            const trainingId = assignment.training_day_id
+
+            if (!acc[dateKey]) acc[dateKey] = {}
+            if (!acc[dateKey][trainingId]) {
+              acc[dateKey][trainingId] = {
+                id: trainingId,
+                training_date: dateKey,
+                training_name: "Training",
+                pilots: [],
+              }
+            }
+
+            // Add all pilots (including pilot_id = 0 for special cases)
+            acc[dateKey][trainingId].pilots.push({
+              id: assignment.pilot_id,
+              first_name: assignment.first_name,
+              last_name: assignment.last_name,
+            })
+
+            return acc
+          }, {})
+
+          // Convert to TrainingDay format
+          Object.values(groupedTraining).forEach((dateGroup: any) => {
+            Object.values(dateGroup).forEach((training: any) => {
+              processedTrainingDays.push(training)
+            })
+          })
+
+          setTrainingDays(processedTrainingDays)
+          console.log("Processed training days for calendar:", processedTrainingDays)
         }
 
         console.log("Final processed assignments:", loadedAssignments)
