@@ -156,9 +156,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
             console.log(`Training assignment ${index}:`, assignment)
 
             // Convert ISO date to YYYY-MM-DD format
-            // Parse the date and get UTC components to avoid timezone issues
-            const tdDate = new Date(assignment.training_date);
-            const trainingDate = `${tdDate.getUTCFullYear()}-${String(tdDate.getUTCMonth() + 1).padStart(2, '0')}-${String(tdDate.getUTCDate()).padStart(2, '0')}`;
+            const trainingDate = assignment.training_date.split("T")[0]
             const slotKey = `training-${trainingDate}-${assignment.training_day_id}-${assignment.assignment_order}`
             const pilotName = `${assignment.first_name} ${assignment.last_name}`
 
@@ -696,12 +694,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
   // Check if a day is a training day
   const isTrainingDay = (date: Date) => {
-    return trainingDays.some((td) => {
-  // Parse the date but preserve the UTC value
-  const tdDate = new Date(td.training_date);
-  const tdDateStr = `${tdDate.getUTCFullYear()}-${String(tdDate.getUTCMonth() + 1).padStart(2, '0')}-${String(tdDate.getUTCDate()).padStart(2, '0')}`;
-  return tdDateStr === format(date, "yyyy-MM-dd");
-});
+    return trainingDays.some((td) => format(new Date(td.training_date), "yyyy-MM-dd") === format(date, "yyyy-MM-dd"))
   }
 
   if (!user || isLoading) {
