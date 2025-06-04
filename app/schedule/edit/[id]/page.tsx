@@ -692,10 +692,11 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
   const monthEnd = endOfMonth(currentDate)
   const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd })
 
-// Check if a day is a training day
-const isTrainingDay = (date: Date) => {
-  return trainingDays.some((td) => format(new Date(td.training_date), "yyyy-MM-dd") === format(date, "yyyy-MM-dd"))
-}
+  // Check if a day is a training day
+  const isTrainingDay = (date: Date) => {
+    return trainingDays.some((td) => format(new Date(td.training_date), "yyyy-MM-dd") === format(date, "yyyy-MM-dd"))
+  }
+
   if (!user || isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -1005,42 +1006,6 @@ const isTrainingDay = (date: Date) => {
                       {isPublishing ? "Publishing..." : "Publish Schedule"}
                     </Button>
                   </div>
-                  <Button
-  onClick={() => {
-    console.log("=== TRAINING DEBUG ===");
-    console.log("All assignments:", assignments);
-    
-    // Find training assignments specifically
-    const trainingAssignments = Object.entries(assignments)
-      .filter(([key]) => key.startsWith('training-'));
-    console.log("Training assignments found:", trainingAssignments.length);
-    trainingAssignments.forEach(([key, value]) => {
-      console.log(`Key: ${key}, Value:`, value);
-    });
-    
-    console.log("Training days:", trainingDays);
-    
-    // Check a specific training day
-    if (trainingDays.length > 0) {
-      const firstTrainingDay = trainingDays[0];
-      console.log("First training day:", firstTrainingDay);
-      
-      const tdDate = format(new Date(firstTrainingDay.training_date), "yyyy-MM-dd");
-      console.log("First training day formatted:", tdDate);
-      
-      // Look for assignments for this training day
-      const matchingKeys = Object.keys(assignments).filter(key => 
-        key.includes(`training-${tdDate}-${firstTrainingDay.id}`)
-      );
-      console.log("Matching assignment keys:", matchingKeys);
-    }
-    
-    alert("Check console for training debug info");
-  }}
-  className="bg-purple-600 hover:bg-purple-700 text-white border-purple-600 ml-2"
->
-  Debug Training
-</Button>
 
                   <div className="border border-gray-700 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-4">
@@ -1139,9 +1104,7 @@ const isTrainingDay = (date: Date) => {
                                       const slotsInRow = []
                                       for (let j = 0; j < 2 && i + j < totalSlotsToShow; j++) {
                                         const slotIndex = i + j
-                                        console.log("TrainingDay object:", trainingDay);
                                         const slotKey = `training-${format(day, "yyyy-MM-dd")}-${trainingDay.id}-${slotIndex}`
-                                        console.log("Looking for key:", slotKey, "Available keys:", Object.keys(assignments).filter(k => k.startsWith('training-')).slice(0, 5));
                                         const assignment = assignments[slotKey]
                                         const isSaving = savingSlots.has(slotKey)
 
