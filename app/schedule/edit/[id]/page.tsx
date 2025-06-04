@@ -1008,35 +1008,39 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
                   </div>
                   <Button
   onClick={() => {
+    console.log("=== TRAINING DEBUG ===");
     console.log("All assignments:", assignments);
-    // Find training assignments
+    
+    // Find training assignments specifically
     const trainingAssignments = Object.entries(assignments)
-      .filter(([key]) => key.startsWith('training-'))
-      .reduce((obj, [key, value]) => {
-        obj[key] = value;
-        return obj;
-      }, {});
-    console.log("Training assignments:", trainingAssignments);
-    console.log("Training days:", trainingDays);
-    
-    // Check for specific training day
-    const today = new Date();
-    const formattedToday = format(today, "yyyy-MM-dd");
-    console.log("Today's date:", formattedToday);
-    
-    // Check keys being generated for today
-    trainingDays.forEach(td => {
-      const tdDate = new Date(td.training_date);
-      console.log("Training day date from DB:", td.training_date);
-      console.log("Training day formatted:", format(tdDate, "yyyy-MM-dd"));
-      console.log("Is same as today?", format(tdDate, "yyyy-MM-dd") === formattedToday);
+      .filter(([key]) => key.startsWith('training-'));
+    console.log("Training assignments found:", trainingAssignments.length);
+    trainingAssignments.forEach(([key, value]) => {
+      console.log(`Key: ${key}, Value:`, value);
     });
     
-    alert("Check console for debug info");
+    console.log("Training days:", trainingDays);
+    
+    // Check a specific training day
+    if (trainingDays.length > 0) {
+      const firstTrainingDay = trainingDays[0];
+      console.log("First training day:", firstTrainingDay);
+      
+      const tdDate = format(new Date(firstTrainingDay.training_date), "yyyy-MM-dd");
+      console.log("First training day formatted:", tdDate);
+      
+      // Look for assignments for this training day
+      const matchingKeys = Object.keys(assignments).filter(key => 
+        key.includes(`training-${tdDate}-${firstTrainingDay.id}`)
+      );
+      console.log("Matching assignment keys:", matchingKeys);
+    }
+    
+    alert("Check console for training debug info");
   }}
-  className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600 ml-2"
+  className="bg-purple-600 hover:bg-purple-700 text-white border-purple-600 ml-2"
 >
-  Debug Assignments
+  Debug Training
 </Button>
 
                   <div className="border border-gray-700 rounded-lg p-4">
