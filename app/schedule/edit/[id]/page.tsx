@@ -119,7 +119,8 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
     console.log("Schedule ID:", scheduleId)
 
     try {
-      const response = await fetch(`/api/schedules/${scheduleId}/assignments`)
+      // Use the correct API endpoint that returns both shift and training assignments
+      const response = await fetch(`/api/schedules/${scheduleId}/assignments`) // This endpoint returns both types
       console.log("Response status:", response.status)
 
       if (response.ok) {
@@ -150,6 +151,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
         // Process training assignments
         if (data.trainingAssignments && Array.isArray(data.trainingAssignments)) {
+          console.log("Processing training assignments:", data.trainingAssignments.length)
           data.trainingAssignments.forEach((assignment: any, index: number) => {
             console.log(`Training assignment ${index}:`, assignment)
 
@@ -172,46 +174,6 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
             console.log(`Created slot key: ${slotKey}`, loadedAssignments[slotKey])
           })
-
-          // Process training days for calendar display (FIXED - moved to correct location)
-          const processedTrainingDays: TrainingDay[] = []
-
-          // Group training assignments by date and training day
-          const groupedTraining = data.trainingAssignments.reduce((acc: any, assignment: any) => {
-            const dateKey = assignment.training_date.split("T")[0]
-            const trainingId = assignment.training_day_id
-
-            if (!acc[dateKey]) acc[dateKey] = {}
-            if (!acc[dateKey][trainingId]) {
-              acc[dateKey][trainingId] = {
-                id: trainingId,
-                training_date: dateKey,
-                training_name: "Training",
-                pilots: [],
-              }
-            }
-
-            // Only add pilots with valid IDs (not 0)
-            if (assignment.pilot_id > 0) {
-              acc[dateKey][trainingId].pilots.push({
-                id: assignment.pilot_id,
-                first_name: assignment.first_name,
-                last_name: assignment.last_name,
-              })
-            }
-
-            return acc
-          }, {})
-
-          // Convert to TrainingDay format
-          Object.values(groupedTraining).forEach((dateGroup: any) => {
-            Object.values(dateGroup).forEach((training: any) => {
-              processedTrainingDays.push(training)
-            })
-          })
-
-          console.log("🎉 FIXED: Setting trainingDays state:", processedTrainingDays)
-          setTrainingDays(processedTrainingDays)
         }
 
         console.log("Final processed assignments:", loadedAssignments)
@@ -227,26 +189,20 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
   }
 
   useEffect(() => {
-    // Mock user data for preview
     const userData = localStorage.getItem("user")
     if (userData) {
       const parsedUser = JSON.parse(userData)
-      setUser(parsedUser)
-    } else {
-      const mockUser = {
-        id: 1,
-        username: "manager",
-        first_name: "Test",
-        last_name: "Manager",
-        role: "manager" as const,
+      if (parsedUser.role !== "manager") {
+        router.push("/dashboard")
+        return
       }
-      setUser(mockUser)
-      localStorage.setItem("user", JSON.stringify(mockUser))
+      setUser(parsedUser)
+      fetchScheduleData()
+      fetchPilots()
+    } else {
+      router.push("/login")
     }
-
-    fetchScheduleData()
-    fetchPilots()
-  }, [scheduleId])
+  }, [router, scheduleId])
 
   // Fetch assignments after schedule data is loaded
   useEffect(() => {
@@ -259,7 +215,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
     } else {
       console.log("No schedule ID or shift definitions not loaded yet, skipping fetchAssignments")
     }
-  }, [scheduleId, shiftDefinitions])
+  }, [scheduleId, shiftDefinitions]) // Add shiftDefinitions as dependency
 
   // Initialize shift time inputs when shift definitions are loaded
   useEffect(() => {
@@ -274,47 +230,34 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
     try {
       setIsLoading(true)
 
-      // Mock schedule data for preview
-      const mockSchedule = {
-        id: 1,
-        month: 6, // June 2025
-        year: 2025,
-        shifts_per_day: 2,
-        is_published: false,
+      // Fetch schedule details
+      const scheduleResponse = await fetch(`/api/schedules/${scheduleId}`)
+      if (scheduleResponse.ok) {
+        const scheduleData = await scheduleResponse.json()
+        setSchedule(scheduleData.schedule)
+        setCurrentDate(new Date(scheduleData.schedule.year, scheduleData.schedule.month - 1, 1))
+      } else {
+        setError("Failed to fetch schedule details")
       }
-      setSchedule(mockSchedule)
-      setCurrentDate(new Date(2025, 5, 1)) // June 2025
 
-      // Mock shift definitions
-      const mockShifts = [
-        { id: 1, schedule_id: 1, shift_letter: "A", start_time: "06:00", duration_hours: 8, pilots_required: 2 },
-        { id: 2, schedule_id: 1, shift_letter: "B", start_time: "14:00", duration_hours: 8, pilots_required: 2 },
-        { id: 3, schedule_id: 1, shift_letter: "C", start_time: "22:00", duration_hours: 8, pilots_required: 2 },
-      ]
-      setShiftDefinitions(mockShifts)
-
-      // Mock training days for June 2025
-      const mockTrainingDays = [
-        { id: 1, training_date: "2025-06-15", training_name: "Training", pilots: [] },
-        { id: 2, training_date: "2025-06-20", training_name: "Training", pilots: [] },
-      ]
-      setTrainingDays(mockTrainingDays)
-
-      // Mock assignments data
-      const mockAssignments = {
-        // Shift assignments
-        "shift-2025-06-01-1-0": { pilotId: "1", pilotName: "John Smith", lastName: "Smith" },
-        "shift-2025-06-01-1-1": { pilotId: "2", pilotName: "Jane Doe", lastName: "Doe" },
-        "shift-2025-06-01-2-0": { pilotId: "3", pilotName: "Bob Johnson", lastName: "Johnson" },
-        "shift-2025-06-02-1-0": { pilotId: "2", pilotName: "Jane Doe", lastName: "Doe" },
-        "shift-2025-06-03-2-1": { pilotId: "1", pilotName: "John Smith", lastName: "Smith" },
-
-        // Training assignments
-        "training-2025-06-15-1-0": { pilotId: "1", pilotName: "John Smith", lastName: "Smith" },
-        "training-2025-06-15-1-1": { pilotId: "2", pilotName: "Jane Doe", lastName: "Doe" },
-        "training-2025-06-20-2-0": { pilotId: "3", pilotName: "Bob Johnson", lastName: "Johnson" },
+      // Fetch shift definitions
+      const shiftsResponse = await fetch(`/api/schedules/${scheduleId}/shifts`)
+      if (shiftsResponse.ok) {
+        const shiftsData = await shiftsResponse.json()
+        setShiftDefinitions(shiftsData.shiftDefinitions)
+      } else {
+        setError("Failed to fetch shift definitions")
       }
-      setAssignments(mockAssignments)
+
+      // Fetch training days
+      const trainingResponse = await fetch(`/api/schedules/${scheduleId}/training`)
+      if (trainingResponse.ok) {
+        const trainingData = await trainingResponse.json()
+        setTrainingDays(trainingData.trainingDays || [])
+      } else {
+        console.error("Failed to fetch training days")
+        setTrainingDays([]) // Set to empty array if fetch fails
+      }
     } catch (error) {
       console.error("An error occurred while fetching schedule data:", error)
       setError("An error occurred while fetching schedule data")
@@ -325,13 +268,13 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
   const fetchPilots = async () => {
     try {
-      // Mock pilots data
-      const mockPilots = [
-        { id: 1, username: "pilot1", first_name: "John", last_name: "Smith", role: "pilot", is_active: true },
-        { id: 2, username: "pilot2", first_name: "Jane", last_name: "Doe", role: "pilot", is_active: true },
-        { id: 3, username: "pilot3", first_name: "Bob", last_name: "Johnson", role: "pilot", is_active: true },
-      ]
-      setPilots(mockPilots)
+      const response = await fetch("/api/users/pilots")
+      if (response.ok) {
+        const data = await response.json()
+        setPilots(data.pilots)
+      } else {
+        setError("Failed to fetch pilots")
+      }
     } catch (error) {
       setError("An error occurred while fetching pilots")
     }
