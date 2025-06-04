@@ -1005,39 +1005,6 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
                       <Save className="w-4 h-4 mr-2" />
                       {isPublishing ? "Publishing..." : "Publish Schedule"}
                     </Button>
-                      <Button
-    onClick={handlePublishSchedule}
-    disabled={isPublishing}
-    className="bg-green-600 hover:bg-green-700 text-white border-green-600"
-  >
-    <Save className="w-4 h-4 mr-2" />
-    {isPublishing ? "Publishing..." : "Publish Schedule"}
-  </Button>
-  
-  <Button
-    onClick={() => {
-      // Find training assignments
-      const trainingKeys = Object.keys(assignments).filter(k => k.startsWith('training-'));
-      console.log("Training assignment keys:", trainingKeys.slice(0, 10));
-      
-      // Check what IDs are used in the assignments
-      const idPattern = /training-\d{4}-\d{2}-\d{2}-(\d+)-\d+/;
-      const ids = new Set();
-      trainingKeys.forEach(key => {
-        const match = key.match(idPattern);
-        if (match && match[1]) {
-          ids.add(match[1]);
-        }
-      });
-      console.log("Training assignment IDs used:", Array.from(ids));
-      
-      alert("Check console for training assignments debug");
-    }}
-    className="bg-orange-600 hover:bg-orange-700 text-white border-orange-600 ml-2"
-  >
-    Debug Assignments
-  </Button>
-</div>
                   </div>
 
                   <div className="border border-gray-700 rounded-lg p-4">
