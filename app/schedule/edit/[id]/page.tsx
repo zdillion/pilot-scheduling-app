@@ -1145,6 +1145,7 @@ const isTrainingDay = (date: Date) => {
                                       const slotsInRow = []
                                       for (let j = 0; j < 2 && i + j < totalSlotsToShow; j++) {
                                         const slotIndex = i + j
+                                        console.log("TrainingDay object:", trainingDay);
                                         const slotKey = `training-${format(day, "yyyy-MM-dd")}-${trainingDay.id}-${slotIndex}`
                                         console.log("Looking for key:", slotKey, "Available keys:", Object.keys(assignments).filter(k => k.startsWith('training-')).slice(0, 5));
                                         const assignment = assignments[slotKey]
