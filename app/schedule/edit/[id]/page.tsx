@@ -180,7 +180,6 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
         console.log("Total assignments loaded:", Object.keys(loadedAssignments).length)
 
         setAssignments(loadedAssignments)
-        window.debugAssignments = loadedAssignments;
       } else {
         console.error("Failed to fetch assignments, status:", response.status)
       }
@@ -250,39 +249,15 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
         setError("Failed to fetch shift definitions")
       }
 
-      // Process training data from assignments (same as view page)
-if (data.trainingAssignments) {
-  const processedTrainingDays = []
-  
-  // Group training assignments by date and training day
-  const groupedTraining = data.trainingAssignments.reduce((acc, assignment) => {
-    const dateKey = assignment.training_date.split("T")[0] // Remove time part
-    const trainingId = assignment.training_day_id
-
-    if (!acc[dateKey]) acc[dateKey] = {}
-    if (!acc[dateKey][trainingId]) {
-      acc[dateKey][trainingId] = {
-        id: trainingId,
-        training_date: dateKey, // Use the processed date string
-        training_name: "Training",
-        pilots: [],
+      // Fetch training days
+      const trainingResponse = await fetch(`/api/schedules/${scheduleId}/training`)
+      if (trainingResponse.ok) {
+        const trainingData = await trainingResponse.json()
+        setTrainingDays(trainingData.trainingDays || [])
+      } else {
+        console.error("Failed to fetch training days")
+        setTrainingDays([]) // Set to empty array if fetch fails
       }
-    }
-
-    return acc
-  }, {})
-
-  // Convert to TrainingDay format
-  Object.values(groupedTraining).forEach((dateGroup) => {
-    Object.values(dateGroup).forEach((training) => {
-      processedTrainingDays.push(training)
-    })
-  })
-
-  setTrainingDays(processedTrainingDays)
-} else {
-  setTrainingDays([])
-}
     } catch (error) {
       console.error("An error occurred while fetching schedule data:", error)
       setError("An error occurred while fetching schedule data")
@@ -718,9 +693,9 @@ if (data.trainingAssignments) {
   const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd })
 
   // Check if a day is a training day
-const isTrainingDay = (date: Date) => {
-  return trainingDays.some((td) => format(new Date(td.training_date), "yyyy-MM-dd") === format(date, "yyyy-MM-dd"))
-}
+  const isTrainingDay = (date: Date) => {
+    return trainingDays.some((td) => format(new Date(td.training_date), "yyyy-MM-dd") === format(date, "yyyy-MM-dd"))
+  }
 
   if (!user || isLoading) {
     return (
