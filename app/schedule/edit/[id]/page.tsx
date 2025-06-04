@@ -692,9 +692,14 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
   const monthEnd = endOfMonth(currentDate)
   const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd })
 
-  // Check if a day is a training day
+// Check if a day is a training day
 const isTrainingDay = (date: Date) => {
-  return trainingDays.some((td) => format(new Date(td.training_date), "yyyy-MM-dd") === format(date, "yyyy-MM-dd"))
+  return trainingDays.some((td) => {
+    // Get the date parts directly from the ISO string to avoid timezone conversion
+    const dbDateStr = td.training_date.split("T")[0]; // Gets "2025-06-02" from "2025-06-02T00:00:00.000Z"
+    const checkDateStr = format(date, "yyyy-MM-dd");
+    return dbDateStr === checkDateStr;
+  });
 }
 
   if (!user || isLoading) {
