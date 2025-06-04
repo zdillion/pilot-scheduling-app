@@ -178,7 +178,37 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
         console.log("Final processed assignments:", loadedAssignments)
         console.log("Total assignments loaded:", Object.keys(loadedAssignments).length)
+// Also process training days from the assignments data (like view page does)
+if (data.trainingAssignments && Array.isArray(data.trainingAssignments)) {
+  const processedTrainingDays = [];
+  
+  // Group training assignments by date and training day
+  const groupedTraining = data.trainingAssignments.reduce((acc, assignment) => {
+    const dateKey = assignment.training_date.split("T")[0]; // Remove time part
+    const trainingId = assignment.training_day_id;
 
+    if (!acc[dateKey]) acc[dateKey] = {};
+    if (!acc[dateKey][trainingId]) {
+      acc[dateKey][trainingId] = {
+        id: trainingId,
+        training_date: dateKey, // Use the processed date string directly
+        training_name: "Training",
+        pilots: [],
+      };
+    }
+    
+    return acc;
+  }, {});
+
+  // Convert to TrainingDay format
+  Object.values(groupedTraining).forEach((dateGroup) => {
+    Object.values(dateGroup).forEach((training) => {
+      processedTrainingDays.push(training);
+    });
+  });
+
+  setTrainingDays(processedTrainingDays);
+}
         setAssignments(loadedAssignments)
       } else {
         console.error("Failed to fetch assignments, status:", response.status)
@@ -249,15 +279,6 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
         setError("Failed to fetch shift definitions")
       }
 
-      // Fetch training days
-      const trainingResponse = await fetch(`/api/schedules/${scheduleId}/training`)
-      if (trainingResponse.ok) {
-        const trainingData = await trainingResponse.json()
-        setTrainingDays(trainingData.trainingDays || [])
-      } else {
-        console.error("Failed to fetch training days")
-        setTrainingDays([]) // Set to empty array if fetch fails
-      }
     } catch (error) {
       console.error("An error occurred while fetching schedule data:", error)
       setError("An error occurred while fetching schedule data")
