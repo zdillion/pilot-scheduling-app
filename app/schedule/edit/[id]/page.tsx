@@ -180,6 +180,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
         console.log("Total assignments loaded:", Object.keys(loadedAssignments).length)
 
         setAssignments(loadedAssignments)
+        window.debugAssignments = loadedAssignments;
       } else {
         console.error("Failed to fetch assignments, status:", response.status)
       }
