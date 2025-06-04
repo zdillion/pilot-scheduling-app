@@ -255,6 +255,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
       if (trainingResponse.ok) {
         const trainingData = await trainingResponse.json()
         setTrainingDays(trainingData.trainingDays || [])
+        window.debugTrainingDays = trainingData.trainingDays || [];
       } else {
         console.error("Failed to fetch training days")
         setTrainingDays([]) // Set to empty array if fetch fails
