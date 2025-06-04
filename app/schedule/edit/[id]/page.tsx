@@ -1018,6 +1018,31 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
                           <ChevronRight className="h-4 w-4" />
                         </Button>
                       </div>
+                      </Button>
+<Button
+  onClick={() => {
+    // Find training assignments
+    const trainingKeys = Object.keys(assignments).filter(k => k.startsWith('training-'));
+    console.log("Training assignment keys:", trainingKeys.slice(0, 10));
+    
+    // Check what IDs are used in the assignments
+    const idPattern = /training-\d{4}-\d{2}-\d{2}-(\d+)-\d+/;
+    const ids = new Set();
+    trainingKeys.forEach(key => {
+      const match = key.match(idPattern);
+      if (match && match[1]) {
+        ids.add(match[1]);
+      }
+    });
+    console.log("Training assignment IDs used:", Array.from(ids));
+    
+    alert("Check console for training assignments debug");
+  }}
+  className="bg-orange-600 hover:bg-orange-700 text-white border-orange-600 ml-2"
+>
+  Debug Assignments
+</Button>
+</div>
                     </div>
 
                     <div className="grid grid-cols-7 gap-1 text-center font-semibold text-sm mb-2 text-white">
