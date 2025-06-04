@@ -150,7 +150,6 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
         // Process training assignments
         if (data.trainingAssignments && Array.isArray(data.trainingAssignments)) {
-          console.log("Processing training assignments:", data.trainingAssignments.length)
           data.trainingAssignments.forEach((assignment: any, index: number) => {
             console.log(`Training assignment ${index}:`, assignment)
 
@@ -294,8 +293,28 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
       ]
       setShiftDefinitions(mockShifts)
 
-      // We'll let fetchAssignments handle setting the training days
-      // so we don't override the real data with empty mock data
+      // Mock training days for June 2025
+      const mockTrainingDays = [
+        { id: 1, training_date: "2025-06-15", training_name: "Training", pilots: [] },
+        { id: 2, training_date: "2025-06-20", training_name: "Training", pilots: [] },
+      ]
+      setTrainingDays(mockTrainingDays)
+
+      // Mock assignments data
+      const mockAssignments = {
+        // Shift assignments
+        "shift-2025-06-01-1-0": { pilotId: "1", pilotName: "John Smith", lastName: "Smith" },
+        "shift-2025-06-01-1-1": { pilotId: "2", pilotName: "Jane Doe", lastName: "Doe" },
+        "shift-2025-06-01-2-0": { pilotId: "3", pilotName: "Bob Johnson", lastName: "Johnson" },
+        "shift-2025-06-02-1-0": { pilotId: "2", pilotName: "Jane Doe", lastName: "Doe" },
+        "shift-2025-06-03-2-1": { pilotId: "1", pilotName: "John Smith", lastName: "Smith" },
+
+        // Training assignments
+        "training-2025-06-15-1-0": { pilotId: "1", pilotName: "John Smith", lastName: "Smith" },
+        "training-2025-06-15-1-1": { pilotId: "2", pilotName: "Jane Doe", lastName: "Doe" },
+        "training-2025-06-20-2-0": { pilotId: "3", pilotName: "Bob Johnson", lastName: "Johnson" },
+      }
+      setAssignments(mockAssignments)
     } catch (error) {
       console.error("An error occurred while fetching schedule data:", error)
       setError("An error occurred while fetching schedule data")
