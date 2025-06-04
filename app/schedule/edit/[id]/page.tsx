@@ -1006,6 +1006,38 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
                       {isPublishing ? "Publishing..." : "Publish Schedule"}
                     </Button>
                   </div>
+                  <Button
+  onClick={() => {
+    console.log("All assignments:", assignments);
+    // Find training assignments
+    const trainingAssignments = Object.entries(assignments)
+      .filter(([key]) => key.startsWith('training-'))
+      .reduce((obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+      }, {});
+    console.log("Training assignments:", trainingAssignments);
+    console.log("Training days:", trainingDays);
+    
+    // Check for specific training day
+    const today = new Date();
+    const formattedToday = format(today, "yyyy-MM-dd");
+    console.log("Today's date:", formattedToday);
+    
+    // Check keys being generated for today
+    trainingDays.forEach(td => {
+      const tdDate = new Date(td.training_date);
+      console.log("Training day date from DB:", td.training_date);
+      console.log("Training day formatted:", format(tdDate, "yyyy-MM-dd"));
+      console.log("Is same as today?", format(tdDate, "yyyy-MM-dd") === formattedToday);
+    });
+    
+    alert("Check console for debug info");
+  }}
+  className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600 ml-2"
+>
+  Debug Assignments
+</Button>
 
                   <div className="border border-gray-700 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-4">
