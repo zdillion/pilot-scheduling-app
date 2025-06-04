@@ -694,7 +694,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
   // Check if a day is a training day
   const isTrainingDay = (date: Date) => {
-    return trainingDays.some((td) => format(new Date(td.training_date), "yyyy-MM-dd") === format(date, "yyyy-MM-dd"))
+    return trainingDays.some((td) => td.training_date.split("T")[0] === format(date, "yyyy-MM-dd"))
   }
 
   if (!user || isLoading) {
