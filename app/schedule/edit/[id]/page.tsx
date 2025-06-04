@@ -1105,6 +1105,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
                                       for (let j = 0; j < 2 && i + j < totalSlotsToShow; j++) {
                                         const slotIndex = i + j
                                         const slotKey = `training-${format(day, "yyyy-MM-dd")}-${trainingDay.id}-${slotIndex}`
+                                        if (slotIndex === 0) console.log("Looking for:", slotKey, "TrainingDay ID:", trainingDay.id);
                                         const assignment = assignments[slotKey]
                                         const isSaving = savingSlots.has(slotKey)
 
