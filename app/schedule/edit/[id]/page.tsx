@@ -696,12 +696,7 @@ export default function ScheduleEditPage({ params }: { params: { id: string } })
 
   // Check if a day is a training day
 const isTrainingDay = (date: Date) => {
-  return trainingDays.some((td) => {
-    // Use the same date handling as the view page - add 1 day to compensate for timezone
-    const dbDate = new Date(td.training_date);
-    dbDate.setUTCHours(12, 0, 0, 0); // Set to noon UTC to avoid timezone edge cases
-    return format(dbDate, "yyyy-MM-dd") === format(date, "yyyy-MM-dd");
-  });
+  return trainingDays.some((td) => format(new Date(td.training_date), "yyyy-MM-dd") === format(date, "yyyy-MM-dd"))
 }
 
   if (!user || isLoading) {
