@@ -920,16 +920,19 @@ console.log("First 5 days:", daysInMonth.slice(0, 5).map(d => ({ date: d, dayOfW
                                     })
                                 }
                               } else {
+// Use the original date without adjustment
+const adjustedDateStr = dateStr
+                                
                                 // Add training day - add one day to compensate for the offset
-const adjustedDate = new Date(dateStr)
-adjustedDate.setDate(adjustedDate.getDate() + 1)
-const adjustedDateStr = adjustedDate.toISOString().split('T')[0]
+                        //     const adjustedDate = new Date(dateStr)
+                        //     adjustedDate.setDate(adjustedDate.getDate() + 1)
+                        //     const adjustedDateStr = adjustedDate.toISOString().split('T')[0]
 
-fetch(`/api/schedules/${scheduleId}/training`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ training_date: adjustedDateStr }),
-})
+                                fetch(`/api/schedules/${scheduleId}/training`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ training_date: adjustedDateStr }),
+                                })
 
                                   .then((response) => response.json())
                                   .then((data) => {
