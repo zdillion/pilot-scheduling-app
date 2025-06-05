@@ -873,7 +873,12 @@ console.log("First 5 days:", daysInMonth.slice(0, 5).map(d => ({ date: d, dayOfW
                     </div>
 
                     <div className="grid grid-cols-7 gap-1">
-                      {daysInMonth.map((day, index) => {
+                      {(() => {
+  const firstDayOfWeek = daysInMonth[0].getDay()
+  const emptyCells = Array.from({ length: firstDayOfWeek }, (_, index) => (
+    <div key={`empty-${index}`} className="min-h-[100px]"></div>
+  ))
+  const dayCells = daysInMonth.map((day, index) => {
                         const isCurrentMonth = isSameMonth(day, currentDate)
                         const isTraining = isTrainingDay(day)
                         const dateStr = format(day, "yyyy-MM-dd")
@@ -952,7 +957,9 @@ console.log("First 5 days:", daysInMonth.slice(0, 5).map(d => ({ date: d, dayOfW
                             {format(day, "d")}
                           </button>
                         )
-                      })}
+})
+    return [...emptyCells, ...dayCells]
+  })()}
                     </div>
                   </div>
 
