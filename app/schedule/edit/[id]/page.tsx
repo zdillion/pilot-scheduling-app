@@ -261,15 +261,14 @@ if (data.trainingAssignments && Array.isArray(data.trainingAssignments)) {
       setIsLoading(true)
 
       // Fetch schedule details
-      const scheduleResponse = await fetch(`/api/schedules/${scheduleId}`)
-      if (scheduleResponse.ok) {
-        const scheduleData = await scheduleResponse.json()
-        setSchedule(scheduleData.schedule)
-       // Use day 15 instead of day 1, but keep the same format
-setCurrentDate(new Date(scheduleData.schedule.year, scheduleData.schedule.month - 1, 15))
-      } else {
-        setError("Failed to fetch schedule details")
-      }
+const scheduleResponse = await fetch(`/api/schedules/${scheduleId}`)
+if (scheduleResponse.ok) {
+  const scheduleData = await scheduleResponse.json()
+  setSchedule(scheduleData.schedule)
+  setCurrentDate(new Date(scheduleData.schedule.year, scheduleData.schedule.month - 1, 1))
+} else {
+  setError("Failed to fetch schedule details")
+}
 
       // Fetch shift definitions
       const shiftsResponse = await fetch(`/api/schedules/${scheduleId}/shifts`)
