@@ -710,8 +710,13 @@ if (scheduleResponse.ok) {
   }
 
   const monthStart = startOfMonth(currentDate)
-  const monthEnd = endOfMonth(currentDate)
-  const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd })
+const monthEnd = endOfMonth(currentDate)
+const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd })
+
+// DEBUG: Log the first few days to see what we're getting
+console.log("Month start:", monthStart)
+console.log("Month end:", monthEnd)
+console.log("First 5 days:", daysInMonth.slice(0, 5).map(d => ({ date: d, dayOfWeek: d.getDay(), formatted: format(d, "yyyy-MM-dd EEEE") })))
 
   // Check if a day is a training day
   const isTrainingDay = (date: Date) => {
