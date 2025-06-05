@@ -497,7 +497,12 @@ export default function ScheduleViewPage() {
                 </div>
 
                 <div className="grid grid-cols-7 gap-1">
-                  {daysInMonth.map((day, index) => {
+                  {(() => {
+  const firstDayOfWeek = daysInMonth[0].getDay()
+  const emptyCells = Array.from({ length: firstDayOfWeek }, (_, index) => (
+    <div key={`empty-${index}`} className="min-h-[80px]"></div>
+  ))
+  const dayCells = daysInMonth.map((day, index) => {
                     const dayShifts = getDailyShiftsForDate(day)
                     const dayTraining = getTrainingForDate(day)
                     const isCurrentMonth = isSameMonth(day, currentDate)
@@ -563,7 +568,9 @@ export default function ScheduleViewPage() {
                         </div>
                       </div>
                     )
-                  })}
+                  })
+    return [...emptyCells, ...dayCells]
+  })()}
                 </div>
               </>
             )}
