@@ -885,7 +885,10 @@ console.log("First 5 days:", daysInMonth.slice(0, 5).map(d => ({ date: d, dayOfW
   const dayCells = daysInMonth.map((day, index) => {
                         const isCurrentMonth = isSameMonth(day, currentDate)
                         const isTraining = isTrainingDay(day)
-                       const dateStr = day.toISOString().split('T')[0]
+                       // Add one day to compensate for the offset
+const adjustedDay = new Date(day)
+adjustedDay.setDate(adjustedDay.getDate() + 1)
+const dateStr = adjustedDay.toISOString().split('T')[0]
 
                         return (
                           <button
