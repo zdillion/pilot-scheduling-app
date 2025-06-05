@@ -265,8 +265,8 @@ if (data.trainingAssignments && Array.isArray(data.trainingAssignments)) {
       if (scheduleResponse.ok) {
         const scheduleData = await scheduleResponse.json()
         setSchedule(scheduleData.schedule)
-       const dateString = `${data.schedule.year}-${String(data.schedule.month).padStart(2, '0')}-15`
-setCurrentDate(new Date(dateString))
+       // Use day 15 instead of day 1, but keep the same format
+setCurrentDate(new Date(data.schedule.year, data.schedule.month - 1, 15))
       } else {
         setError("Failed to fetch schedule details")
       }
