@@ -885,7 +885,7 @@ console.log("First 5 days:", daysInMonth.slice(0, 5).map(d => ({ date: d, dayOfW
   const dayCells = daysInMonth.map((day, index) => {
                         const isCurrentMonth = isSameMonth(day, currentDate)
                         const isTraining = isTrainingDay(day)
-                        const dateStr = format(day, "yyyy-MM-dd")
+                       const dateStr = day.toISOString().split('T')[0]
 
                         return (
                           <button
