@@ -920,14 +920,24 @@ console.log("First 5 days:", daysInMonth.slice(0, 5).map(d => ({ date: d, dayOfW
                                     })
                                 }
                               } else {
-                                // Use the original date without any adjustment
-const adjustedDateStr = dateStr
+                                } else {
+  // Add debugging to see what's happening
+  console.log("=== TRAINING DAY CLICK DEBUG ===")
+  console.log("Clicked day object:", day)
+  console.log("Formatted date string:", dateStr)
+  console.log("Day.getDate():", day.getDate())
+  console.log("Day.toISOString():", day.toISOString())
+  
+  // Use the original date without any adjustment
+  const adjustedDateStr = dateStr
 
-fetch(`/api/schedules/${scheduleId}/training`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ training_date: adjustedDateStr }),
-})
+  console.log("Date being sent to API:", adjustedDateStr)
+
+  fetch(`/api/schedules/${scheduleId}/training`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ training_date: adjustedDateStr }),
+  })
 
                                   .then((response) => response.json())
                                   .then((data) => {
