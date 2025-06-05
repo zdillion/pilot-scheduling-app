@@ -876,8 +876,12 @@ console.log("First 5 days:", daysInMonth.slice(0, 5).map(d => ({ date: d, dayOfW
                       {(() => {
   const firstDayOfWeek = daysInMonth[0].getDay()
   const emptyCells = Array.from({ length: firstDayOfWeek }, (_, index) => (
-    <div key={`empty-${index}`} className="min-h-[100px]"></div>
-  ))
+  <button
+    key={`empty-${index}`}
+    className="h-10 w-10 text-sm rounded-md border border-gray-700 cursor-not-allowed"
+    disabled
+  ></button>
+))
   const dayCells = daysInMonth.map((day, index) => {
                         const isCurrentMonth = isSameMonth(day, currentDate)
                         const isTraining = isTrainingDay(day)
