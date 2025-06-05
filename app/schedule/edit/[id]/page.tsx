@@ -422,7 +422,7 @@ if (scheduleResponse.ok) {
     date?: Date,
   ) => {
     // Create a unique key for this slot
-    const dateStr = date ? format(date, "yyyy-MM-dd") : ""
+    const dateStr = date ? date.toISOString().split('T')[0] : ""
     const slotKey =
       slotType === "shift"
         ? `shift-${dateStr}-${shiftId}-${slotIndex}`
