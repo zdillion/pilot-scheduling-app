@@ -266,6 +266,8 @@ if (data.trainingAssignments && Array.isArray(data.trainingAssignments)) {
         const scheduleData = await scheduleResponse.json()
         setSchedule(scheduleData.schedule)
        // Use day 15 instead of day 1, but keep the same format
+console.log("Schedule data:", data.schedule);
+console.log("Year:", data.schedule.year, "Month:", data.schedule.month);
 setCurrentDate(new Date(data.schedule.year, data.schedule.month - 1, 15))
       } else {
         setError("Failed to fetch schedule details")
